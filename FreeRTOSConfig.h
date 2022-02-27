@@ -65,7 +65,7 @@
 #define configFRTOS_MEMORY_SCHEME					4
 
 /* Tasks.c additions (e.g. Thread Aware Debug capability). */
-#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H	1
+#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H	0
 
 /* Memory allocation related definitions. */
 #define configSUPPORT_STATIC_ALLOCATION				0
