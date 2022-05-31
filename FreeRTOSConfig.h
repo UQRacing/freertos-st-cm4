@@ -1,5 +1,5 @@
 /*
- * FreeRTOS V202107.00
+ * FreeRTOS V202112.00
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -39,6 +39,7 @@
  *
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
+#include "safety.h"
 
 #define configUSE_PREEMPTION						1
 #define configUSE_TICKLESS_IDLE						0
@@ -65,12 +66,12 @@
 #define configFRTOS_MEMORY_SCHEME					4
 
 /* Tasks.c additions (e.g. Thread Aware Debug capability). */
-#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H	1
+#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H	0
 
 /* Memory allocation related definitions. */
 #define configSUPPORT_STATIC_ALLOCATION				0
 #define configSUPPORT_DYNAMIC_ALLOCATION			1
-#define configTOTAL_HEAP_SIZE						( ( size_t )( 10 * 1024 ) )
+#define configTOTAL_HEAP_SIZE						( ( size_t )( 16 * 1024 ) )
 #define configAPPLICATION_ALLOCATED_HEAP			0
 
 /* Hook function related definitions. */
@@ -99,7 +100,7 @@
 #define configTIMER_TASK_STACK_DEPTH			( configMINIMAL_STACK_SIZE * 2 )
 
 /* Define to trap errors during development. */
-#define configASSERT(x)							assert((x))
+#define configASSERT(x)							SAFETY_ASSERT((x))
 
 /* Optional functions - most linkers will remove unused functions anyway. */
 #define INCLUDE_vTaskPrioritySet				1
@@ -124,23 +125,23 @@
 	extern uint32_t SystemCoreClock;
 #endif
 
-/* Interrupt nesting behaviour configuration. Cortex-M specific. */
+/* Cortex-M specific definitions. */
 #ifdef __NVIC_PRIO_BITS
 /* __BVIC_PRIO_BITS will be specified when CMSIS is being used. */
-#define configPRIO_BITS __NVIC_PRIO_BITS
+	#define configPRIO_BITS       		__NVIC_PRIO_BITS
 #else
-#define configPRIO_BITS 3 /* 8 priority levels */
+#define configPRIO_BITS       		4        /* 15 priority levels */
 #endif
 
 /* The lowest interrupt priority that can be used in a call to a "set priority"
 function. */
-#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY ((1U << (configPRIO_BITS)) - 1)
+#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY 0xF
 
 /* The highest interrupt priority that can be used by any interrupt service
 routine that makes calls to interrupt safe FreeRTOS API functions.  DO NOT CALL
 INTERRUPT SAFE FREERTOS API FUNCTIONS FROM ANY INTERRUPT THAT HAS A HIGHER
 PRIORITY THAN THIS! (higher priorities are lower numeric values. */
-#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 2
+#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 5
 
 /* Interrupt priorities used by the kernel port layer itself.  These are generic
 to all Cortex-M ports, and do not rely on any particular library functions. */
@@ -154,8 +155,5 @@ standard names. */
 #define vPortSVCHandler			SVC_Handler
 #define xPortPendSVHandler		PendSV_Handler
 #define xPortSysTickHandler		SysTick_Handler
-
-/* Ensure that system calls can only be made from kernel code. */
-#define configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY		1
 
 #endif /* FREERTOS_CONFIG_H */
