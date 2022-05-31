@@ -13,3 +13,7 @@ Maintainer: Matt Young (m.young2@uqconnect.edu.au)
     - Source: FreeRTOS/Source/portable/GCC/ARM_CM4F
 - Config file suitable for Cortex-M4 systems
 - TODO any ST stuff that is required
+
+## Licence
+This is just a bundle of FreeRTOS, so it is released under the same licence as FreeRTOS itself, which is currently the MIT licence. See
+LICENSE.txt for more details.
